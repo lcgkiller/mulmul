@@ -1,9 +1,13 @@
+from django.contrib.auth import logout as django_logout
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from rest_auth.views import LoginView
 from rest_framework import generics, status, permissions
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.utils.translation import ugettext_lazy as _
 
 from member.serializers import UserLoginSerializer
 from member.serializers.user_serializers import PaginatedUserSerializer, UserSerializer, UserCreationSerializer
@@ -16,6 +20,7 @@ from ..models import User, Relation
 __all__ = (
     'UserListView',
     'UserLoginView',
+    'UserLogoutView',
     'UserRetrieveUpdateDestroyView',
 
     'MyWishList',
@@ -48,6 +53,25 @@ class UserLoginView(LoginView):
         email.last_login = timezone.now()
         email.save(update_fields=['last_login'])
         return Response({'token': token.key})
+
+
+class UserLogoutView(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        return self.logout(request)
+
+    def logout(self, request):
+        try:
+            request.user.auth_token.delete()
+        except (AttributeError, ObjectDoesNotExist):
+            # 커스터마이징 부분
+            return Response({"detail": _("토큰이 제공되지 않았습니다.")},
+                            status=status.HTTP_401_UNAUTHORIZED)
+        django_logout(request)
+
+        return Response({"detail": _("성공적으로 로그아웃 되었습니다.")},
+                        status=status.HTTP_200_OK)
 
 
 class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
