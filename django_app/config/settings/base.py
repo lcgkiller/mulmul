@@ -58,11 +58,12 @@ INSTALLED_APPS = [
 
     # Third Party Library
     'django_extensions',
-    'rest_framework',            # django-restframework 라이브러리
-    'rest_framework.authtoken',  # django-rest-allauth 라이브러리
+    'rest_framework',            # DRF
+    'rest_framework.authtoken',  # DRF 토큰
     'rest_auth',                 # django-rest-allauth 라이브러리
     'rest_auth.registration',    # django-rest-allauth 라이브러리
     'corsheaders',               # CORS 라이브러리
+    'django_filters',            # DRF 검색필터
 
     # Django App
     'member',
@@ -145,6 +146,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
     'PAGE_SIZE': 10,
     # 'PAGINATE_BY': 10,                 # Default to 10
     # 'PAGINATE_BY_PARAM': 'page_size',  # Allow client to override, using `?page_size=xxx`.
