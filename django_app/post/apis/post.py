@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import Http404
 from rest_framework import permissions, generics, filters
 from rest_framework import status
@@ -6,7 +6,6 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from post.serializers import PostSearchSerializer
 from utils import ObjectIsRequestUser
 from ..serializers import PostSerializer
 from ..models import Post
@@ -91,12 +90,24 @@ class PostLikeToggleView(APIView):
         return Response({'created': post_like_created})
 
 
-class PostSearchView(generics.ListAPIView):
+class PostSearchView(generics.ListCreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class = PostSerializer
     filter_backends = (filters.SearchFilter, )
 
+    # '^' : Starts-with search
+    # '=' : Exact matches
+    # '@' : Full-text search (Only Supported Django's MySQL Backend)
+    # '$' : Regex search
+    search_fields = ('title', 'content')
+    lookup_url_kwarg = "search"
+
     def get_queryset(self):
-        keyword = self.kwargs['keyword']
-        print("@@@@@@@@@@@@@@@ keyword :", keyword)
-        return Post.objects.filter(title=keyword)
+        queryset = Post.objects.all()
+        keyword = self.request.GET.get('keyword', None)
+        if keyword is not None:
+            queryset = queryset.filter(
+                Q(title__icontains=keyword) |
+                Q(content__icontains=keyword)
+            )
+        return queryset
