@@ -90,7 +90,7 @@ class PostLikeToggleView(APIView):
         return Response({'created': post_like_created})
 
 
-class PostSearchView(generics.ListCreateAPIView):
+class PostSearchView(generics.ListAPIView):
     permission_classes = (AllowAny,)
     serializer_class = PostSerializer
     filter_backends = (filters.SearchFilter, )
