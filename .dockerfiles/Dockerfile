@@ -29,7 +29,7 @@ RUN         npm install
 RUN         npm run build
 
 # collectstatic 실행
-RUN  /root/.pyenv/versions/mulmul/bin/python /srv/mulmul/django_app/manage.py collectstatic --settings=config.settings.deploy --noinput
+#RUN  /root/.pyenv/versions/mulmul/bin/python /srv/mulmul/django_app/manage.py collectstatic --settings=config.settings.deploy --noinput
 
 
 CMD         supervisord -n
