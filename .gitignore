@@ -4,6 +4,7 @@
 static_root/
 .static_root/
 .media/
+mulmul/
 # Created by https://www.gitignore.io/api/vim,macos,linux,django,python,pycharm
 
 ### Django ###

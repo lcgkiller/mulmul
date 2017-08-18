@@ -2,7 +2,7 @@ from django.contrib.auth import logout as django_logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from rest_auth.views import LoginView
-from rest_framework import generics, status, permissions
+from rest_framework import generics, status, permissions, parsers, renderers
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -43,6 +43,8 @@ class UserListView(generics.ListCreateAPIView):
 
 
 class UserLoginView(LoginView):
+    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.JSONParser,)
+    renderer_classes = (renderers.JSONRenderer,)
     serializer_class = UserLoginSerializer
 
     def post(self, request, *args, **kwargs):
