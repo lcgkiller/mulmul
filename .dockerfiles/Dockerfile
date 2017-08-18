@@ -22,9 +22,8 @@ RUN         ln -sf /etc/nginx/sites-available/nginx-app.conf /etc/nginx/sites-en
 
 # front프로젝트 복사 (git clone <프론트엔드 github 주소> <복사할 디렉토리 이름 지정>)
 WORKDIR     /srv
-RUN         git clone https://github.com/uchang7194/mulmul.git front
+RUN         git clone https://github.com/fc-pickyeater/fds-picky.git front
 WORKDIR     /srv/front
-# sudo npm install -g http-server
 RUN         npm install
 RUN         npm run build
 
@@ -33,7 +32,7 @@ RUN         npm run build
 
 
 CMD         supervisord -n
-EXPOSE      80 8000
+EXPOSE      80 8000 8080
 
 
 # 실행시
